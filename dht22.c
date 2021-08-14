@@ -339,12 +339,12 @@ static int proc_open(struct inode *inode, struct file *file)
 }
 
 static struct proc_dir_entry *proc_dir, *proc_file;
-static const struct file_operations proc_fileops = {
-	.owner = THIS_MODULE,
-	.open = proc_open,
-	.read = seq_read,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops proc_fileops = {
+	.proc_owner = THIS_MODULE,
+	.proc_open = proc_open,
+	.proc_read = seq_read,
+	.proc_llseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 static void proc_init(void)
