@@ -26,7 +26,7 @@ install:
 	depmod -a 
 
 uninstall:
-rm -fv /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/${MODULE}.ko
+	rm -fv /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/${MODULE}.ko
 
  
 info:
