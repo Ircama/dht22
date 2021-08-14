@@ -340,7 +340,6 @@ static int proc_open(struct inode *inode, struct file *file)
 
 static struct proc_dir_entry *proc_dir, *proc_file;
 static const struct proc_ops proc_fileops = {
-	.proc_owner = THIS_MODULE,
 	.proc_open = proc_open,
 	.proc_read = seq_read,
 	.proc_llseek = seq_lseek,
