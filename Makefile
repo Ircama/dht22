@@ -19,6 +19,13 @@ clean:
 # this just copies a file to raspberry
 #install:
 #	scp ${module_upload} pi@raspberry:test/
+
+# This will only work if compiling on the pi
+install:
+    cp ${MODULE}.ko /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/
+
+uninstall:
+    rm -fv /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/${MODULE}.ko
  
 info:
 	modinfo  ${module_upload}
