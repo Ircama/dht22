@@ -320,7 +320,7 @@ static int proc_show(struct seq_file *m, void *v)
 		check_measurement();
 	}
 
-	tv = ktime.get((dht22->read_timestamp));
+	tv = ktime_get((dht22->read_timestamp));
 	t = get_temperature();
 	h = get_humidity();
 
