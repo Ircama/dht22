@@ -310,7 +310,6 @@ static int proc_show(struct seq_file *m, void *v)
 	short int h;
 	short int t;
 	ktime_t tv;
-	s64 delta;
 
 	// Read sensor
 	send_start_bit();
@@ -328,7 +327,7 @@ static int proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "\n");
 	seq_printf(m, "  temperature = %d.%1d° C\n", t / 10, t % 10);
 	seq_printf(m, "  humidity = %d.%1d%% RH\n", h / 10, h % 10);
-	seq_printf(m, "timestamp = %d\n", tv);
+	seq_printf(m, "timestamp = %s", tv);
 	seq_printf(m, dht22-> chksum_ok ? "  no checksum error\n" : "  checksum error !\n");
 	return 0;
 }
