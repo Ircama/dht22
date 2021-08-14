@@ -309,7 +309,7 @@ static int proc_show(struct seq_file *m, void *v)
 {
 	short int h;
 	short int t;
-	ktime_t;
+	ktime_t tv;
 	s64 delta;
 
 	// Read sensor
