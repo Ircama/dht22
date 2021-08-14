@@ -342,7 +342,7 @@ static struct proc_dir_entry *proc_dir, *proc_file;
 static const struct proc_ops proc_fileops = {
 	.proc_open = proc_open,
 	.proc_read = seq_read,
-	.proc_llseek = seq_lseek,
+	.proc_lseek = seq_lseek,
 	.proc_release = single_release,
 };
 
