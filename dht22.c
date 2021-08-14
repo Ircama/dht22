@@ -431,7 +431,6 @@ static int read_raw(struct iio_dev *iio_dev,
 /* iio_dev variables block                                               */
 /****************************************************************************/
 static const struct iio_info dht22_iio_info = {
-	.driver_module = THIS_MODULE,
 	.read_raw = read_raw,
 };
 
