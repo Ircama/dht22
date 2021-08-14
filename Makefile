@@ -22,11 +22,11 @@ clean:
 
 # This will only work if compiling on the pi
 install:
-        cp ${MODULE}.ko /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/
-        depmod -a 
+	cp ${MODULE}.ko /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/
+	depmod -a 
 
 uninstall:
-        rm -fv /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/${MODULE}.ko
+rm -fv /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/${MODULE}.ko
 
  
 info:
