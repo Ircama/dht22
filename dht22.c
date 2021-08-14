@@ -26,6 +26,7 @@
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
 #include <linux/delay.h>
+#include <linux/ktime.h>
 
 #include <linux/platform_device.h>
 #include <linux/iio/iio.h>
@@ -308,7 +309,8 @@ static int proc_show(struct seq_file *m, void *v)
 {
 	short int h;
 	short int t;
-	struct timeval tv;
+	ktime_t;
+	s64 delta;
 
 	// Read sensor
 	send_start_bit();
@@ -318,7 +320,7 @@ static int proc_show(struct seq_file *m, void *v)
 		check_measurement();
 	}
 
-	tv = ktime_to_timeval((dht22->read_timestamp));
+	tv = ktime.get((dht22->read_timestamp));
 	t = get_temperature();
 	h = get_humidity();
 
@@ -326,7 +328,7 @@ static int proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "\n");
 	seq_printf(m, "  temperature = %d.%1d° C\n", t / 10, t % 10);
 	seq_printf(m, "  humidity = %d.%1d%% RH\n", h / 10, h % 10);
-	seq_printf(m, "  timestamp = %ld\n", (long)tv.tv_sec);
+	seq_printf(m, tv);
 	seq_printf(m, dht22-> chksum_ok ? "  no checksum error\n" : "  checksum error !\n");
 	return 0;
 }
