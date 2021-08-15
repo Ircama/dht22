@@ -383,7 +383,7 @@ static void read_sensor(struct dht22_state *dht22)
 
 static int read_raw(struct iio_dev *iio_dev,
 		    const struct iio_chan_spec *chan,
-		    int *val, int *val2, int *val3, long mask)
+		    int *val, int *val2, long *val3, long mask)
 {
 	struct dht22_state *dht22 = iio_priv(iio_dev);
 
@@ -416,8 +416,9 @@ static int read_raw(struct iio_dev *iio_dev,
 				return (-EINVAL);
 			return (IIO_VAL_FRACTIONAL);
 			break;
+	
 
- 		case IIO_CHAN_INFO_PROCESSED:
+ 		case IIO_CHAN_INFO_1WIRE:
     		// Read sensor
 			read_sensor(dht22);
 			*val3 = DHT22_CONST_SCALE3;
@@ -430,7 +431,7 @@ static int read_raw(struct iio_dev *iio_dev,
 			else
 				return (-EINVAL);
 			return (IIO_VAL_FRACTIONAL);
-			break;				
+			break;			
 
 		case IIO_CHAN_INFO_SCALE:
             *val  = DHT22_CONST_SCALE;
@@ -460,7 +461,7 @@ static const struct iio_chan_spec dht22_chan_spec[] = {
 	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_PROCESSED),
 	 .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),},
 	{.type = IIO_TEMP,
-	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_PROCESSED),
+	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_1WIRE),
 	 .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),},
 
 };
