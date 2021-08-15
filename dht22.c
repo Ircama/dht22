@@ -44,7 +44,7 @@
 // to generate interrupt
 #define GPIO_ANY_GPIO                	4
 #define GPIO_ANY_GPIO_DESC           	"gpio pin used for DHT22"
-#define GPIO_ANY_GPIO_DEVICE_DESC    	"Read temperature and huminity"
+#define GPIO_ANY_GPIO_DEVICE_DESC    	"Read temperature and humidity"
 #define DHT22_CONST_SCALE				1
 #define DHT22_CONST_SCALE2				10
 
@@ -512,7 +512,7 @@ static int probe_dht22(struct platform_device *pdev)
  free_iio_gpio:
 	devm_gpio_free(dev, dht22_idev->gpio);
  free_iio_device:
-	devm_iio_device_alloc(dev, iio);
+	devm_iio_device_alloc(dev, *iio);
 	return (ret);
 }
 
