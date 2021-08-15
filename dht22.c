@@ -383,7 +383,7 @@ static void read_sensor(struct dht22_state *dht22)
 
 static int read_raw(struct iio_dev *iio_dev,
 		    const struct iio_chan_spec *chan,
-		    int *val, int *val2, long mask)
+		    int *val, int *val2, int *val3, long mask)
 {
 	struct dht22_state *dht22 = iio_priv(iio_dev);
 
