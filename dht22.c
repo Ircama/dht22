@@ -46,7 +46,7 @@
 #define GPIO_ANY_GPIO_DESC           	"gpio pin used for DHT22"
 #define GPIO_ANY_GPIO_DEVICE_DESC    	"Read temperature and humidity"
 #define DHT22_CONST_SCALE				1
-#define DHT22_CONST_SCALE2				10
+#define DHT22_CONST_SCALE2				1000
 
 #define MAX_TIMESTAMPS					43
 // T LOW is typical 50 us 
