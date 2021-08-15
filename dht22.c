@@ -47,6 +47,8 @@
 #define GPIO_ANY_GPIO_DEVICE_DESC    	"Read temperature and humidity"
 #define DHT22_CONST_SCALE				1
 #define DHT22_CONST_SCALE2				10
+// Compatibility for scripts that use 1wire 
+#define DHT22_CONST_SCALE3				1000
 
 #define MAX_TIMESTAMPS					43
 // T LOW is typical 50 us 
@@ -421,6 +423,20 @@ static int read_raw(struct iio_dev *iio_dev,
 			return(IIO_VAL_FRACTIONAL);
 			break;
 
+		case IIO_CHAN_INFO_1WIRE:
+			read_sensor(dht22)
+			*val3 = DHT22_CONST_SCALE3;
+			if (chan->type == IIO_TEMP){
+				*val = get_temperature() * DHT22_CONST_SCALE3;
+				}
+			else if (chan->type == IIO_HUMIDITYRELATIVE){
+				*val = get_humidity() * DHT22_CONST_SCALE;
+				}
+			else
+				return (-EINVAL);
+			return (IIO_VAL_FRACTIONAL);
+			break;
+
 		default:
 		    dev_err(dht22->dev, "wrong mask %ld", mask);
 			return (-EINVAL);
@@ -440,7 +456,11 @@ static const struct iio_chan_spec dht22_chan_spec[] = {
 	 .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),},
 	{.type = IIO_HUMIDITYRELATIVE,
 	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_PROCESSED),
-	 .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),}
+	 .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),},
+	{.type = IIO_TEMP,
+	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_PROCESSED),
+	 .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE3),},
+
 };
 
 static const struct of_device_id dht22_dt_ids[] = {
