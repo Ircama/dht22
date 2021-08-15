@@ -23,10 +23,12 @@ clean:
 # This will only work if compiling on the pi
 install:
 	cp ${MODULE}.ko /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/
+	cp ${MODULE}.dtbo /boot/overlays/
 	depmod -a 
 
 uninstall:
 	rm -fv /lib/modules/$(shell uname -r)/kernel/drivers/iio/humidity/${MODULE}.ko
+	rm -fv /boot/overlays/${MODULE}.dtbo
 
  
 info:
