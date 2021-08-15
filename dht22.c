@@ -406,20 +406,6 @@ static int read_raw(struct iio_dev *iio_dev,
     		// Read sensor
 			read_sensor(dht22);
 			*val2 = DHT22_CONST_SCALE2;
-			if (chan->type == IIO_TEMP){
-				*val = get_temperature() * DHT22_CONST_SCALE;
-				}
-			else if (chan->type == IIO_HUMIDITYRELATIVE){
-				*val = get_humidity() * DHT22_CONST_SCALE;
-				}
-			else
-				return (-EINVAL);
-			return (IIO_VAL_FRACTIONAL);
-			break;
-	
- 		case IIO_CHAN_INFO_PROCESSED:
-    		// Read sensor
-			read_sensor(dht22);
 			*val3 = DHT22_CONST_SCALE3;
 			if (chan->type == IIO_TEMP){
 				*val = get_temperature() * DHT22_CONST_SCALE;
@@ -430,7 +416,7 @@ static int read_raw(struct iio_dev *iio_dev,
 			else
 				return (-EINVAL);
 			return (IIO_VAL_FRACTIONAL);
-			break;			
+			break;		
 
 		case IIO_CHAN_INFO_SCALE:
             *val  = DHT22_CONST_SCALE;
