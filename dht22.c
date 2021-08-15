@@ -383,7 +383,7 @@ static void read_sensor(struct dht22_state *dht22)
 
 static int read_raw(struct iio_dev *iio_dev,
 		    const struct iio_chan_spec *chan,
-		    int *val, int *val2, *val3, long mask)
+		    int *val, int *val2, int val3, long mask)
 {
 	struct dht22_state *dht22 = iio_priv(iio_dev);
 
@@ -406,7 +406,7 @@ static int read_raw(struct iio_dev *iio_dev,
     		// Read sensor
 			read_sensor(dht22);
 			*val2 = DHT22_CONST_SCALE2;
-			*val3 = DHT22_CONST_SCALE3;
+			val3 = DHT22_CONST_SCALE3;
 			if (chan->type == IIO_TEMP){
 				*val = get_temperature() * DHT22_CONST_SCALE;
 				}
@@ -421,7 +421,7 @@ static int read_raw(struct iio_dev *iio_dev,
 		case IIO_CHAN_INFO_SCALE:
             *val  = DHT22_CONST_SCALE;
 			*val2 = DHT22_CONST_SCALE2;
-			*val3 = DHT22_CONST_SCALE3;
+			val3 = DHT22_CONST_SCALE3;
 			return(IIO_VAL_FRACTIONAL);
 			break;
 
