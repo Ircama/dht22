@@ -512,7 +512,7 @@ static int probe_dht22(struct platform_device *pdev)
  free_iio_gpio:
 	devm_gpio_free(dev, dht22_idev->gpio);
  free_iio_device:
-	devm_iio_device_alloc(*dev, iio);
+	devm_iio_device_alloc(dev, iio);
 	return (ret);
 }
 
