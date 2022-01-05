@@ -39,10 +39,11 @@
 #define DRIVER_DESC	"DHT22 Driver"
 #define PROC_DIR_NAME	"dht22"
 #define PROC_FILE_NAME	"gpio%02d"
+#define LOOPS 10
 
-// we want GPIO pin 4
+// we want GPIO pin 12
 // to generate interrupt
-#define GPIO_ANY_GPIO                	4
+#define GPIO_ANY_GPIO                	12
 #define GPIO_ANY_GPIO_DESC           	"gpio pin used for DHT22"
 #define GPIO_ANY_GPIO_DEVICE_DESC    	"Read temperature and humidity"
 #define DHT22_CONST_SCALE				1
@@ -55,6 +56,8 @@
 #define BIT_LEVEL                       (53 + T_LOW)
 // Macro to generate bit
 #define MAKE_BIT(x)                     ((get_time_diff(x+3)) > BIT_LEVEL ? 1:0)
+
+int i;
 
 /****************************************************************************/
 /* Interrupts variables block                                               */
@@ -133,19 +136,19 @@ void print_timediffs(void)
 	short int i;
 
 	for (i = 3; i < MAX_TIMESTAMPS; i++) {
-		printk("Timediffstamp[%02d] %d us\n", i, get_time_diff(i));
+		printk("dht22 - Timediffstamp[%02d] %d us\n", i, get_time_diff(i));
 	}
 }
 
 void print_bytes(void)
 {
 	short int i;
-	printk("Counted falling edges = %d\n", dht22->counted_edges);
+	printk("dht22 - Counted falling edges = %d\n", dht22->counted_edges);
 	for (i = 0; i < 4; i++) {
-		printk("bytes[%d] = %02x\n", i, dht22->bytes[i]);
+		printk("dht22 - bytes[%d] = %02x\n", i, dht22->bytes[i]);
 	}
-	printk("checksum = %02x\n", dht22->checksum);
-	printk("chksum_ok = %d\n", dht22->chksum_ok);
+	printk("dht22 - checksum = %02x\n", dht22->checksum);
+	printk("dht22 - chksum_ok = %d\n", dht22->chksum_ok);
 }
 
 void make_bytes(void)
@@ -194,7 +197,7 @@ int get_temperature(void)
 void print_temperature(void)
 {
 	int t = get_temperature();
-	printk("temperature = %d.%1d° C\n", t / 10, t % 10);
+	printk("dht22 - temperature = %d.%1d° C\n", t / 10, t % 10);
 }
 
 int get_humidity(void)
@@ -207,7 +210,7 @@ void print_humidity(void)
 {
 	int h = get_humidity();
 
-	printk("humidity = %d.%1d%% RH\n", h / 10, h % 10);
+	printk("dht22 - humidity = %d.%1d%% RH\n", h / 10, h % 10);
 }
 
 /****************************************************************************/
@@ -221,8 +224,9 @@ void send_start_bit(void)
 	// read only every 2000 ms
 	if ((ktime_to_ms(new_timestamp) - ktime_to_ms(dht22->read_timestamp)) >=
 	    2000) {
-		printk("Set start bit!\n");
-
+#ifdef DEBUG
+		printk("dht22 - Set start bit!\n");
+#endif
 		dht22->read_timestamp = new_timestamp;
 		dht22->counted_edges = 0;
 		memset(&(dht22->timestamps[0]), 0, sizeof(dht22->timestamps));
@@ -247,25 +251,25 @@ int setup_dht22(struct dht22_state *dht22_idev)
 	if(dht22->gpio == 0) {
 		dht22->gpio = GPIO_ANY_GPIO;
 		if (gpio_request(GPIO_ANY_GPIO, GPIO_ANY_GPIO_DESC)) {
-			printk(KERN_NOTICE "GPIO request faiure: %s\n", GPIO_ANY_GPIO_DESC);
+			printk(KERN_NOTICE "dht22 - GPIO request faiure: %s\n", GPIO_ANY_GPIO_DESC);
 			return -1;
 		}
 	}
 
 	if(dht22->irq == 0) {
 		if ((dht22->irq = gpio_to_irq(dht22->gpio)) < 0) {
-			printk(KERN_NOTICE "GPIO to IRQ mapping faiure %s\n", GPIO_ANY_GPIO_DESC);
+			printk(KERN_NOTICE "dht22 - GPIO to IRQ mapping faiure %s\n", GPIO_ANY_GPIO_DESC);
 		return -1;
 		}
 	}
 
-	printk(KERN_NOTICE "Mapped int %d\n", dht22->irq);
+	printk(KERN_NOTICE "dht22 - Mapped int %d\n", dht22->irq);
 
 	if (request_irq(dht22->irq,
 			(irq_handler_t) r_irq_handler,
 			IRQF_TRIGGER_FALLING,
 			GPIO_ANY_GPIO_DESC, GPIO_ANY_GPIO_DEVICE_DESC)) {
-		printk(KERN_NOTICE "Irq Request failure\n");
+		printk(KERN_NOTICE "dht22 - Irq Request failure\n");
 		return -1;
 	}
 
@@ -274,12 +278,14 @@ int setup_dht22(struct dht22_state *dht22_idev)
 	mutex_lock(&dht22->lock);
 	send_start_bit();
 	// Try again if it fails
-	if (!check_measurement()) {
+	for(i=0;i<LOOPS;i++)
+	    if (!check_measurement()) {
 		send_start_bit();
 		check_measurement();
 	}
 	mutex_unlock(&dht22->lock);
 	
+#ifdef DEBUG
 	print_timestamps();
 	print_timediffs();
 	check_measurement();
@@ -288,6 +294,7 @@ int setup_dht22(struct dht22_state *dht22_idev)
 	print_bytes();
 	print_humidity();
 	print_temperature();
+#endif
 	return 0;
 }
 
@@ -314,7 +321,8 @@ static int proc_show(struct seq_file *m, void *v)
 	// Read sensor
 	send_start_bit();
 	// Try again if it fails
-	if (!check_measurement()) {
+	for(i=0;i<LOOPS;i++)
+	    if (!check_measurement()) {
 		send_start_bit();
 		check_measurement();
 	}
@@ -372,7 +380,8 @@ static void read_sensor(struct dht22_state *dht22)
     // Read sensor
 	send_start_bit();
 	// Try again if it fails
-	if (!check_measurement()) {
+	for(i=0;i<LOOPS;i++)
+	    if (!check_measurement()) {
 		send_start_bit();
 		check_measurement();
 		}
@@ -536,11 +545,11 @@ static struct platform_driver dht22_driver = {
 /****************************************************************************/
 int m_init(void)
 {
-	printk(KERN_NOTICE "Hello DHT22!\n");
+	printk(KERN_NOTICE "dht22 - Hello DHT22!\n");
 
 	dht22 = kmalloc(sizeof(struct dht22_state), GFP_KERNEL);
 	if (!dht22) {
-		printk("kmalloc request faiure: %s\n", GPIO_ANY_GPIO_DESC);
+		printk("dht22 - kmalloc request faiure: %s\n", GPIO_ANY_GPIO_DESC);
 		return -1;
 	}
 	setup_dht22(dht22);
@@ -551,7 +560,7 @@ int m_init(void)
 
 void m_cleanup(void)
 {
-	printk(KERN_NOTICE "Goodbye\n");
+	printk(KERN_NOTICE "dht22 - Goodbye\n");
 	proc_cleanup();
 	m_int_release();
 }

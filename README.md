@@ -1,13 +1,20 @@
 # dht22 Kernel Driver
 
 A DHT22 kernel driver for Raspberry Pi.
-See the specufication on http://www.electrodragon.com/w/AM2302
+See the specification on http://www.electrodragon.com/w/AM2302
 
+History:
+
+ - Original code from https://github.com/KermsGit/dht22
+ - Added fix in https://github.com/chrisice/dht22 for compiling when using kernel 5.10.52 v7+
+ - Changed pin from 4 to 12
+ - Better driver messages
+ 
 Add the "bin/dht22.dtbo" to the "/boot/overlays/" directory and add a lines with
 
 ```
 # Enable DHT22 sensor
-dtoverlay=dht22,gpiopin=4
+dtoverlay=dht22,gpiopin=12
 ```
 to the /boot/config.txt
 
@@ -24,7 +31,7 @@ A cat "/proc/dht22/gpio04" shows:
 ```
 root@pixel:~/Source/kernel/dht22# cat /proc/dht22/gpio04
 
-DHT22 on gpio pin 4:
+DHT22 on gpio pin 12:
   temperature = 21.9° C
   humidity = 38.0% RH
   timestamp = 259

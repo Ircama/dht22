@@ -15,7 +15,7 @@
 				compatible = "dht22";
 				pinctrl-names = "default";
 				pinctrl-0 = <&dht22_pins>;
-				gpios = <&gpio 4 0>;
+				gpios = <&gpio 12 0>;
 				status = "okay";
 			};
 		};
@@ -25,7 +25,7 @@
 		target = <&gpio>;
 		__overlay__ {
 			dht22_pins: dht22_pins {
-				brcm,pins = <4>;
+				brcm,pins = <12>;
 				brcm,function = <0>; // in
 				brcm,pull = <0>; // off
 			};
@@ -34,6 +34,6 @@
 
 	__overrides__ {
 		gpiopin = <&dht22_pins>,"brcm,pins:0",
-			<&dht22>,"gpios:4";
+			<&dht22>,"gpios:12";
 	};
 };
